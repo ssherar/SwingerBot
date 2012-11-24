@@ -47,7 +47,12 @@ class Bot:
 		while 1:
 			ircmesg = self.ircsock.recv(2048).strip("\n\r")
 			data = self.matchMessage.search(ircmesg)
-			print ircmesg
+			if ircmesg != None:
+				print ircmesg
+			if ircmesg.find("PING") != -1:
+				host = ircmesg.split(" ")[1]
+				print host
+				self.send("PING " + host)
 			if data != None:
 				username = data.group(1)
 				host = data.group(2)
