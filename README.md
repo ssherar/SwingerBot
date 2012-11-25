@@ -13,7 +13,8 @@ a plugin has to have certain things for it to function properly: these are
 * a constructor which has the signature `__init__(self, sbot):` in which you assign `self.bot` to `sbot`
 * a method action with signature `action(self, channel, message, username, host`
 
-* (optional) method clean with signature `clean(self, channel, message, username, host)`
+* (optional) method clean with signature `clean(self, channel, message, username, host)` 
+ This is run after each listen
 
 for example
 
@@ -33,11 +34,11 @@ Config file example
 ```json
 {
 	"nick" : "Bot",
-	"server", "irc.example.com",
+	"server" : "irc.example.com",
 	"port" : 6667,
 	"password" : "nickservpasswd",
 	"admins" : ["admin", "admin2"]:
-	"channels" : [#channel1, #channel2],
+	"channels" : ["#channel1", "#channel2"]
 }
 	
 ```
