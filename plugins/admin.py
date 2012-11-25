@@ -1,5 +1,6 @@
 import re
 import sys
+from git import *
 
 class admin:
 	command = "^!admin"
@@ -21,3 +22,13 @@ class admin:
 			self.bot.reload_plugins()
 		elif command == "join":
 			self.bot.send("JOIN :{0}".format(data[1]))
+		elif command == "gload":
+			self.gitload(channel)
+
+	def gitload(self, channel):
+		self.bot.say(channel, "Pulling from origin...")
+		repo = Repo("~/bot/")
+		o = repo.remotes.origin
+		o.pull()
+		self.bot.say(channel, "Pull complete! Reloading Plugins...")
+		self.bot.reload_plugins()
