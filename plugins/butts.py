@@ -5,4 +5,4 @@ class butts:
 		self.bot = sbot
 
 	def action(self, channel, message, username, host):
-		self.bot.say(channel, "I love butts")
+		self.bot.say(channel, "lol Butts")

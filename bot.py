@@ -88,12 +88,12 @@ class Bot:
 
 	# Could load admin plugin to check
 	def reload_plugins(self):
-		self.plugins = {}
-		self.clean = []
-		for root, dirs, files in os.walk("/plugins/"):
+		for root, dirs, files in os.walk("plugins/"):
 			for currentFile in files:
-				if currentFile.endswith(".pyc"):
-					os.remove(os.join(root, currentFile))
+				if currentFile.endswith(".py") and currentFile.find("init") == -1:
+					currentFile = currentFile.strip(".py")
+					print "plugins."+currentFile
+					del(sys.modules["plugins.{0}".format(currentFile)])	
 		self.load_plugins()
 
 	def load_plugins(self):
