@@ -3,6 +3,7 @@ import socket
 import sys
 import json
 import re
+import os
 
 class Bot:
 	server = ""
@@ -13,7 +14,7 @@ class Bot:
 	admins = []
 	debug = False
 
-	matchMessage = re.compile("^:(\w+)!\w+@([\w\d\.-]+) PRIVMSG (#\w+) :(.*)$")
+	matchMessage = re.compile("^:(\w+)!\w+@([\w\d\.-]+) PRIVMSG (#?\w+) :(.*)$")
 
 	default_calls = {}
 	plugins = {}
@@ -89,6 +90,10 @@ class Bot:
 	def reload_plugins(self):
 		self.plugins = {}
 		self.clean = []
+		for root, dirs, files in os.walk("/plugins/"):
+			for currentFile in files:
+				if currentFile.endswith(".pyc"):
+					os.remove(os.join(root, currentFile))
 		self.load_plugins()
 
 	def load_plugins(self):
