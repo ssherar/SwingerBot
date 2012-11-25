@@ -13,8 +13,7 @@ class admin:
 		command = data.pop(1)
 		if not self.bot.verify_user(username):
 			self.bot.say(channel, "{0}: You're not an admin bitch!".format(username))
-			return	
-		if command == "quit":
+		elif command == "quit":
 			self.bot.say(channel, "Goodbye Cruel World")
 			sys.exit(0)
 		elif command == "reload":
