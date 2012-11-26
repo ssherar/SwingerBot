@@ -25,7 +25,7 @@ class admin:
 		elif command == "gload":
 			self.gitload(channel)
 		elif command == "leave":
-			self.bot.send("PART {0} :Screw you guys I'm going home".format(channel))
+			self.bot.send("PART {0} :Screw you guys I'm going home".format(data[1]))
 
 	def gitload(self, channel):
 		self.bot.say(channel, "Pulling from origin...")
