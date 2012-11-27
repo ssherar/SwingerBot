@@ -5,4 +5,7 @@ class butts:
 		self.bot = sbot
 
 	def action(self, channel, message, username, host):
-		self.bot.say(channel, "I GODDAMN LOVE BUTTS")
+		if username == "bugsduggan":
+			self.bot.say(channel, "I hear " + username + " likes anal.")
+		else:
+			self.bot.say(channel, "I GODDAMN LOVE BUTTS")
