@@ -11,4 +11,4 @@ class butts:
 		if username == "bugsduggan":
 			self.bot.say(channel, "I hear " + username + " likes anal.")
 		else:
-			self.bot.say(channel, choice(self.sayings)
+			self.bot.say(channel, choice(self.sayings))
