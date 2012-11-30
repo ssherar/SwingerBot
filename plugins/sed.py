@@ -15,9 +15,9 @@ class sed:
 			uname = data.group(1)
 			wordFind = data.group(2)
 			wordOther = data.group(3)
-			if uname in self.history and self.history[uname].find(wordFind) != -1:
+			if uname in self.history and re.search(wordFind, self.history[uname]) != None:
 				hist = self.history[uname]
-				hist = hist.replace(wordFind, wordOther)
+				hist = re.sub(wordFind, wordReplace, hist)
 				self.bot.say(channel, "{0} thought {1} meant: {2}".format(username, uname, hist))
 	
 		elif self.sedFind.search(message) != None:
