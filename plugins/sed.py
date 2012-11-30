@@ -24,9 +24,9 @@ class sed:
 			data = self.sedFind.search(message)
 			wordFind = data.group(1)
 			wordReplace = data.group(2)
-			if username in self.history and self.history[username].find(wordFind) != -1:
+			if username in self.history and re.search(wordFind, self.history[username]) != None:
 				hist = self.history[username]
-				hist = hist.replace(wordFind, wordReplace)
+				hist = re.sub(wordFind, wordReplace, hist)
 				self.bot.say(channel, "{0}: {1}".format(username, hist))
 	
 	def clean(self, channel, username, message):
