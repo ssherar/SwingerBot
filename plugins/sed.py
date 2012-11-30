@@ -1,7 +1,7 @@
 import re
 class sed:
-	sedFind = re.compile("s/([\w\s]+)/([\w\s]+)/?")
-	sedFindOther = re.compile("([\w]+): s/([\w\s]+)/([\w\s]+)/?")
+	sedFind = re.compile("s/(.+)/(.+)/")
+	sedFindOther = re.compile("([\w]+): s/(.+)/(.+)/")
 	command = "s/(.*)/(.*)/$"
 	bot = None
 	history = {}
