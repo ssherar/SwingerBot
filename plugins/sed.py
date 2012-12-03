@@ -20,7 +20,7 @@ class sed:
 				if hist.find("ACTION") != -1:
 					hist = hist.strip("\001")
 					hist = hist.replace("ACTION", "/me")
-				hist = re.sub(wordFind, wordReplace, hist)
+				hist = re.sub(wordFind, wordOther, hist)
 				self.bot.say(channel, "{0} thought {1} meant: {2}".format(username, uname, hist))
 	
 		elif self.sedFind.search(message) != None:
