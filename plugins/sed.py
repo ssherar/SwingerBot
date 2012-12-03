@@ -17,6 +17,9 @@ class sed:
 			wordOther = data.group(3)
 			if uname in self.history and re.search(wordFind, self.history[uname]) != None:
 				hist = self.history[uname]
+				if hist.find("ACTION") != -1:
+					hist = hist.strip("\001")
+					hist = hist.replace("ACTION", "/me")
 				hist = re.sub(wordFind, wordReplace, hist)
 				self.bot.say(channel, "{0} thought {1} meant: {2}".format(username, uname, hist))
 	
