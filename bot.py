@@ -23,7 +23,6 @@ class Bot:
 
 	def __init__(self, config_file):
 		data = json.loads(open("./" + config_file).read())
-		self.default_calls["!reload"] = getattr(self, "reload_plugins")
 		self.server = data['server']
 		self.nick = data['nick']
 		if "password" in data:
@@ -60,13 +59,6 @@ class Bot:
 				channel = data.group(3)
 				message = data.group(4)
 
-				for name in self.default_calls:
-					if re.search(name, message) != None:
-						if self.verify_user(username):
-							self.default_calls[name]()
-						else:
-							self.say(channel, "Not admin, bitch")
-				
 				for name in self.plugins:
 					if re.search(name, message) != None:
 						self.plugins[name].action(channel, message, username, host)
