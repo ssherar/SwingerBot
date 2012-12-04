@@ -76,7 +76,7 @@ class Bot:
 			self.send(tosay)
 	
 	def action(self, channel, message):
-		self.say(channel, "{0} ACTION {1} {2}".format(chr(1), message, chr(1)))
+		self.say(channel, "\001ACTION {0} ".format(message))
 
 	# Could load admin plugin to check
 	def reload_plugins(self):
