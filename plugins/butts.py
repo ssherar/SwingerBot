@@ -2,7 +2,7 @@ from random import choice
 
 class butts:
 	bot = None;
-	command = "^(butts|buttocks)"
+	command = "^(butts|buttocks|arse|ass)"
 	sayings = ["I GODDAMN LOVE BUTTS", "\001ACTION wiggles", "Yes butts?", "WIGGLE WIGGLE WIGGLE YEAH", "I see you baby, shaking that butt"]
 	def __init__(self, sbot):
 		self.bot = sbot
