@@ -14,7 +14,7 @@ class Bot:
 	admins = []
 	debug = False
 
-	matchMessage = re.compile("^:(\w+)!\w+@([\w\d\.-]+) PRIVMSG (#?\w+) :(.*)$")
+	matchMessage = re.compile("^:([\w_\-]+)!\w+@([\w\d\.-]+) PRIVMSG (#?\w+) :(.*)$")
 
 	default_calls = {}
 	plugins = {}
