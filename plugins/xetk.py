@@ -1,4 +1,4 @@
-import subprocess as sub
+import os
 
 class xetk:
 	command = "^~"
@@ -8,10 +8,10 @@ class xetk:
 		self.bot = sbot
 		
 	def action(self, channel, message, username, host):
-		#data = message.split(" ")
-		#command = data.pop(1)
-		p = sub.Popen('fortune -s',stdout=sub.PIPE,stderr=sub.PIPE)
-		output, errors = p.communicate()
-		self.bot.say(channel, output)
+		p = os.popen('fortune -s',"r")
+		while 1:
+		line = p.readline()
+		if not line: break
+		self.bot.say(channel, line)
 		
 	
