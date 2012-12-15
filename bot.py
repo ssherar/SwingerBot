@@ -15,10 +15,12 @@ class Bot:
 	debug = False
 
 	matchMessage = re.compile("^:([\w_\-]+)!\w+@([\w\d\.-]+) PRIVMSG (#?\w+) :(.*)$")
-
+	matchJoin = re.compile("^:([\w_\-]+)!\w+@([\w\d.\-]+) JOIN :(#?\w+)")
+	
 	default_calls = {}
 	plugins = {}
 	clean = []
+	onJoin = []
 	ircsock = None
 
 	def __init__(self, config_file):
@@ -47,6 +49,7 @@ class Bot:
 		while 1:
 			ircmesg = self.ircsock.recv(2048).strip("\n\r")
 			data = self.matchMessage.search(ircmesg)
+			joinData = self.matchJoin.search(ircmesg)
 			if ircmesg != None:
 				print ircmesg
 			if ircmesg.find("PING") != -1:
@@ -64,7 +67,16 @@ class Bot:
 						self.plugins[name].action(channel, message, username, host)
 
 				self.cleaner(channel, username, message)
-	
+			if joinData != None:
+				username = joinData.group(1)
+				host = joinData.group(2)
+				channel = joinData.group(3)
+				self.onJoined(channel, host, username)
+
+	def onJoined(self, channel, host, username):
+		for name in self.onJoin:
+			self.plugins[name].onJoin(channel, host, username)
+		
 	def send(self, cmd):
 		self.ircsock.send(cmd+ " \n")
 
@@ -99,6 +111,12 @@ class Bot:
 				try:
 					getattr(klass, "clean")
 					self.clean.append(klass.command)
+				except:
+					pass
+
+				try:
+					getattr(klass, "onJoin")
+					self.onJoin.append(klass.command)
 				except:
 					pass
 		
