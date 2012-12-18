@@ -1,0 +1,6 @@
+{
+	"nick":"Test-Bot",
+	"channels" : ["#buca"],
+	"admins" : ["Sambuca"],
+	"server" : "irc.aberwiki.org"
+}

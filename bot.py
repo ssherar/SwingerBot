@@ -6,6 +6,7 @@ import re
 import os
 
 class Bot:
+	# The class wide variables loaded fron the config json file
 	server = ""
 	nick = ""
 	password = ""
@@ -14,16 +15,28 @@ class Bot:
 	admins = []
 	debug = False
 
+	# Matches any PRIVMSG sent
 	matchMessage = re.compile("^:([\w_\-]+)!\w+@([\w\d\.-]+) PRIVMSG (#?\w+) :(.*)$")
+	# Matches any user joining  
 	matchJoin = re.compile("^:([\w_\-]+)!\w+@([\w\d.\-]+) JOIN :(#?\w+)")
 	
+	# Holds default calls
+	# Deprecated
 	default_calls = {}
+	# Holds the commands for loaded plugins
 	plugins = {}
+	# Holds the names of the plugins which have the method clean()
 	clean = []
+	# Holds the names of the plugins which have the method onJoin()
 	onJoin = []
 	ircsock = None
 
 	def __init__(self, config_file):
+		"""
+			Loads the json file passed into the class and
+			and loads all the plugins associated to the
+			bot
+		"""
 		data = json.loads(open("./" + config_file).read())
 		self.server = data['server']
 		self.nick = data['nick']
@@ -36,6 +49,10 @@ class Bot:
 		self.load_plugins()
 
 	def connect(self):
+		"""
+			Creates a socket to the server, identifies itself
+			and then starts listening
+		"""
 		self.ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.ircsock.connect((self.server, self.port))
 		self.send("USER " + self.nick + " " + self.nick + " " + self.nick + ": " + self.nick)
@@ -46,6 +63,10 @@ class Bot:
 		self.listen()
 
 	def listen(self): 
+		"""
+			Main loop of the program: takes data from the socket
+			and then sanitises it, to be able to pass to relevant functions
+		"""
 		while 1:
 			ircmesg = self.ircsock.recv(2048).strip("\n\r")
 			data = self.matchMessage.search(ircmesg)
@@ -74,13 +95,23 @@ class Bot:
 				self.onJoined(channel, host, username)
 
 	def onJoined(self, channel, host, username):
+		"""
+			Calls the onJoin() method which can be found in 
+			certain plugins
+		"""
 		for name in self.onJoin:
 			self.plugins[name].onJoin(channel, host, username)
 		
 	def send(self, cmd):
+		"""
+			Sends raw data to the IRC server
+		"""
 		self.ircsock.send(cmd+ " \n")
 
 	def say(self, channel, message):
+		"""
+			Sends a PRIVMSG to the specified channel
+		"""
 		tosay = "PRIVMSG {0} :{1}".format(channel, message)
 		if self.debug:
 			print tosay
@@ -88,10 +119,18 @@ class Bot:
 			self.send(tosay)
 	
 	def action(self, channel, message):
+		"""
+			Adds null character to the start of the message
+			to change it into an ACTION, then usies say(self, channel, messag)
+		"""
 		self.say(channel, "\001ACTION {0} ".format(message))
 
 	# Could load admin plugin to check
 	def reload_plugins(self):
+		"""
+			unloads all modules which are available in the 
+			plugins directory, then loads them back in
+		"""
 		for root, dirs, files in os.walk("plugins/"):
 			for currentFile in files:
 				if currentFile.endswith(".py") and currentFile.find("init") == -1:
@@ -101,6 +140,9 @@ class Bot:
 		self.load_plugins()
 
 	def load_plugins(self):
+		"""
+			Loads all plugins which can be found in the plugins/ directory
+		"""
 		import os
 
 		for file_name in os.listdir("plugins/"):
@@ -123,6 +165,10 @@ class Bot:
 				print "%s loaded" % file_name
 		
 	def my_import(self, name):
+		"""
+			imports the class from the parameter name
+			from the directory plugins
+		"""
 		path = "plugins.%s" % name
 		mod = __import__(path,fromlist=[name]) 
 		components = path.split(".")
@@ -131,10 +177,18 @@ class Bot:
 		return mod
 	
 	def cleaner(self, channel, username, message):
+		"""
+			Calls all plugins which have the cleaner()
+			methods.
+		"""
 		for name in self.clean:
 			self.plugins[name].clean(channel, username, message)
 	
 	def dlisten(self,channel, message, username, host=""):
+		"""
+			Debug method which prints out the terminal 
+			instead of the socket
+		"""
 		if self.debug != False:
 			self.say(channel, "-> %s " % message)
 			for name in self.default_calls:
@@ -152,6 +206,10 @@ class Bot:
 			print "Not in debug mode"
 			sys.exit(1)
 	def verify_user(self, username):
+		"""
+			Verify the user who sent the message against
+			the admin list
+		"""
 		for admin in self.admins:
 			if username == admin:
 				return True
