@@ -13,13 +13,13 @@ class Bot:
 	port = 6667
 	channels = []
 	admins = []
-	debug = False
+
 
 	# Matches any PRIVMSG sent
 	matchMessage = re.compile("^:([\w_\-]+)!\w+@([\w\d\.-]+) PRIVMSG (#?\w+) :(.*)$")
 	# Matches any user joining  
 	matchJoin = re.compile("^:([\w_\-]+)!\w+@([\w\d.\-]+) JOIN :(#?\w+)")
-	
+
 	# Holds default calls
 	# Deprecated
 	default_calls = {}
@@ -71,28 +71,32 @@ class Bot:
 			ircmesg = self.ircsock.recv(2048).strip("\n\r")
 			data = self.matchMessage.search(ircmesg)
 			joinData = self.matchJoin.search(ircmesg)
-			if ircmesg != None:
-				print ircmesg
-			if ircmesg.find("PING") != -1:
-				host = ircmesg.split(" ")[1]
-				print host
-				self.send("PING " + host)
-			if data != None:
-				username = data.group(1)
-				host = data.group(2)
-				channel = data.group(3)
-				message = data.group(4)
+			try:
+				if ircmesg != None:
+					print ircmesg
+				if ircmesg.find("PING") != -1:
+					host = ircmesg.split(" ")[1]
+					print host
+					self.send("PING " + host)
+				if data != None:
+					username = data.group(1)
+					host = data.group(2)
+					channel = data.group(3)
+					message = data.group(4)
 
-				for name in self.plugins:
-					if re.search(name, message) != None:
-						self.plugins[name].action(channel, message, username, host)
+					for name in self.plugins:
+						if re.search(name, message) != None:
+							self.plugins[name].action(channel, message, username, host)
+	
+					self.cleaner(channel, username, message)
+				if joinData != None:
+					username = joinData.group(1)
+					host = joinData.group(2)
+					channel = joinData.group(3)
+					self.onJoined(channel, host, username)
 
-				self.cleaner(channel, username, message)
-			if joinData != None:
-				username = joinData.group(1)
-				host = joinData.group(2)
-				channel = joinData.group(3)
-				self.onJoined(channel, host, username)
+			except Exception as e:
+				print e
 
 	def onJoined(self, channel, host, username):
 		"""
@@ -101,7 +105,7 @@ class Bot:
 		"""
 		for name in self.onJoin:
 			self.plugins[name].onJoin(channel, host, username)
-		
+
 	def send(self, cmd):
 		"""
 			Sends raw data to the IRC server
@@ -113,11 +117,8 @@ class Bot:
 			Sends a PRIVMSG to the specified channel
 		"""
 		tosay = "PRIVMSG {0} :{1}".format(channel, message)
-		if self.debug:
-			print tosay
-		else:
-			self.send(tosay)
-	
+		self.send(tosay)
+
 	def action(self, channel, message):
 		"""
 			Adds null character to the start of the message
@@ -162,9 +163,9 @@ class Bot:
 					self.onJoin.append(klass.command)
 				except:
 					pass
-		
+
 				print "%s loaded" % file_name
-		
+
 	def my_import(self, name):
 		"""
 			imports the class from the parameter name
@@ -176,7 +177,7 @@ class Bot:
 		for comp in components[1:]:
 			mod = getattr(mod, comp)
 		return mod
-	
+
 	def cleaner(self, channel, username, message):
 		"""
 			Calls all plugins which have the cleaner()
@@ -184,28 +185,7 @@ class Bot:
 		"""
 		for name in self.clean:
 			self.plugins[name].clean(channel, username, message)
-	
-	def dlisten(self,channel, message, username, host=""):
-		"""
-			Debug method which prints out the terminal 
-			instead of the socket
-		"""
-		if self.debug != False:
-			self.say(channel, "-> %s " % message)
-			for name in self.default_calls:
-				if re.search(name, message) != None:
-					if self.verify_user(username):
-						self.default_calls[name]()
-					else:
-						self.say(channel, "Not admin, bitch")
-			for name in self.plugins:
-				if re.search(name, message) != None:
-					self.plugins[name].action(channel, message, username, host)
 
-			self.cleaner(channel, username, message)
-		else:
-			print "Not in debug mode"
-			sys.exit(1)
 	def verify_user(self, username):
 		"""
 			Verify the user who sent the message against
