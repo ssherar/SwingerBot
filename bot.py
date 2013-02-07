@@ -67,17 +67,15 @@ class Bot:
 			Main loop of the program: takes data from the socket
 			and then sanitises it, to be able to pass to relevant functions
 		"""
+		channel = ""
 		while 1:
 			ircmesg = self.ircsock.recv(2048).strip("\n\r")
 			data = self.matchMessage.search(ircmesg)
 			joinData = self.matchJoin.search(ircmesg)
+			if ircmesg.find("PING") != -1:
+				host = ircmesg.split(" ")[1]
+				self.send("PING " + host)
 			try:
-				if ircmesg != None:
-					print ircmesg
-				if ircmesg.find("PING") != -1:
-					host = ircmesg.split(" ")[1]
-					print host
-					self.send("PING " + host)
 				if data != None:
 					username = data.group(1)
 					host = data.group(2)
@@ -96,7 +94,9 @@ class Bot:
 					self.onJoined(channel, host, username)
 
 			except Exception as e:
-				print e
+				exc_type, exc_value, exc_traceback = sys.exc_info()
+				self.say(channel, "Error: {0}".format(exc_type))
+				pass
 
 	def onJoined(self, channel, host, username):
 		"""
@@ -138,7 +138,8 @@ class Bot:
 					currentFile = currentFile.strip(".py")
 					print "plugins."+currentFile
 					# Problem with loading new plugins as they are not existing yet
-					del(sys.modules["plugins.{0}".format(currentFile)])	
+					if "plugins.{0}".format(currentFile) in sys.modules:
+						del(sys.modules["plugins.{0}".format(currentFile)])	
 		self.load_plugins()
 
 	def load_plugins(self):
