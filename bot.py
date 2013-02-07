@@ -136,6 +136,7 @@ class Bot:
 				if currentFile.endswith(".py") and currentFile.find("init") == -1:
 					currentFile = currentFile.strip(".py")
 					print "plugins."+currentFile
+					# Problem with loading new plugins as they are not existing yet
 					del(sys.modules["plugins.{0}".format(currentFile)])	
 		self.load_plugins()
 
