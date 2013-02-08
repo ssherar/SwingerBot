@@ -13,8 +13,8 @@ a plugin has to have certain things for it to function properly: these are
 * a constructor which has the signature `__init__(self, sbot):` in which you assign `sbot` to `self.bot`
 * a method action with signature `action(self, channel, message, username, host`
 
-* (optional) method clean with signature `clean(self, channel, message, username, host)` 
- This is run after each listen
+* (optional) method clean with signature `clean(self, channel, message, username, host)` This is run after each listen.
+* (optional) method onJoin with signature `onJoin(self, channel, username, host)`, which listens for a `JOIN` command from the IRC server
 
 for example
 
@@ -37,7 +37,7 @@ Config file example
 	"server" : "irc.example.com",
 	"port" : 6667,
 	"password" : "nickservpasswd",
-	"admins" : ["admin", "admin2"]:
+	"admins" : ["admin", "admin2"],
 	"channels" : ["#channel1", "#channel2"]
 }
 	
