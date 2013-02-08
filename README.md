@@ -10,7 +10,7 @@ a plugin has to have certain things for it to function properly: these are
 
 * a command - any regex string which you want to check input against
 * a bot variable
-* a constructor which has the signature `__init__(self, sbot):` in which you assign `self.bot` to `sbot`
+* a constructor which has the signature `__init__(self, sbot):` in which you assign `sbot` to `self.bot`
 * a method action with signature `action(self, channel, message, username, host`
 
 * (optional) method clean with signature `clean(self, channel, message, username, host)` 
