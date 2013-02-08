@@ -13,6 +13,7 @@ class Bot:
 	port = 6667
 	channels = []
 	admins = []
+	plugin_name = []
 
 
 	# Matches any PRIVMSG sent
@@ -138,7 +139,7 @@ class Bot:
 					currentFile = currentFile.strip(".py")
 					print "plugins."+currentFile
 					# Problem with loading new plugins as they are not existing yet
-					if "plugins.{0}".format(currentFile) in sys.modules:
+					if ("plugins.{0}".format(currentFile) in sys.modules) and (currentFile in self.plugin_names):
 						del(sys.modules["plugins.{0}".format(currentFile)])	
 		self.load_plugins()
 
@@ -148,9 +149,13 @@ class Bot:
 		"""
 		import os
 
+		i = 0
+		self.plugin_names = []
 		for file_name in os.listdir("plugins/"):
 			if file_name.endswith(".py") and file_name != "__init__.py":
-				klass = self.my_import(file_name.replace(".py", ""))
+				klass = self.my_import(file_name.strip(".py"))
+				self.plugin_names[i] = file_name.strip(".py")
+				i = i+1
 				regex = klass.command
 				self.plugins[regex] = klass(self)
 				try:
