@@ -13,8 +13,9 @@ class sed:
 		if self.sedFindOther.search(message) != None:
 			data = self.sedFindOther.search(message)
 			uname = data.group(1)
-			wordFind = data.group(2)
-			wordOther = data.group(3)
+			wordFind = data.group(2).strip("/")
+			wordOther = data.group(3).strip("/")
+
 			if uname in self.history and re.search(wordFind, self.history[uname]) != None:
 				hist = self.history[uname]
 				if hist.find("ACTION") != -1:
@@ -25,8 +26,8 @@ class sed:
 	
 		elif self.sedFind.search(message) != None:
 			data = self.sedFind.search(message)
-			wordFind = data.group(1)
-			wordReplace = data.group(2)
+			wordFind = data.group(1).strip("/")
+			wordReplace = data.group(2).strip("/")
 			if username in self.history and re.search(wordFind, self.history[username]) != None:
 				hist = self.history[username]
 				hist = re.sub(wordFind, wordReplace, hist)
