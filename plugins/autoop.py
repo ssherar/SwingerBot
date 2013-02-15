@@ -6,4 +6,4 @@ class autoop:
 		self.bot = sbot
 
 	def onJoin(self, channel, username, host):
-		self.bot.send("MODE {0} +o {1}".format(channel, username)
+		self.bot.send("MODE {0} +o {1}".format(channel, username))
