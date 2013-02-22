@@ -93,7 +93,7 @@ class Bot:
 					channel = joinData.group(3)
 					self.onJoined(channel, host, username)
 
-			except Exception as e:
+			except Exception:
 				exc_type, exc_value, exc_traceback = sys.exc_info()
 				self.say(channel, "Error: {0}".format(exc_type))
 				pass
