@@ -122,7 +122,7 @@ class Bot:
 	def action(self, channel, message):
 		"""
 			Adds null character to the start of the message
-			to change it into an ACTION, then usies say(self, channel, messag)
+			to change it into an ACTION, then uses say(self, channel, messag)
 		"""
 		self.say(channel, "\001ACTION {0} ".format(message))
 
