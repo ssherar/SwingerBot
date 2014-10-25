@@ -37,3 +37,6 @@ nosetests.xml
 # Config files
 _config.json
 *.swp
+
+# Virualenv
+venv
